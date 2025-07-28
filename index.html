@@ -30,6 +30,21 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // --- Yahan aapka test code aayega ---
+    // Yeh test karne ke liye ke data likha ja raha hai ya nahi
+    db.ref('test_write/from_index_html').set({
+      message: "Hello from my index.html!",
+      timestamp: Date.now(),
+      status: "success"
+    })
+    .then(() => {
+      console.log("TEST WRITE: Data written successfully! Check your Firebase Realtime Database.");
+    })
+    .catch((error) => {
+      console.error("TEST WRITE ERROR: Error writing data: ", error);
+    });
+    // --- Test code khatam ---
+
     function searchData() {
       const name = document.getElementById('searchName').value.toLowerCase();
       const result = document.getElementById('result');

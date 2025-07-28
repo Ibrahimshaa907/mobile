@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin Panel</title>
-  <meta charset="UTF-8">
+  <title>Search Person</title>
 </head>
 <body>
-  <h1>Enter Person Information</h1>
+  <h1>Search by Name</h1>
 
-  <input type="text" id="name" placeholder="Name"><br><br>
-  <input type="text" id="mobile" placeholder="Mobile"><br><br>
-  <input type="text" id="father" placeholder="Father Name"><br><br>
-  <input type="text" id="address" placeholder="Address"><br><br>
-  <input type="text" id="blood" placeholder="Blood Group"><br><br>
+  <input type="text" id="searchName" placeholder="Enter name">
+  <button onclick="search()">Search</button>
 
-  <button onclick="saveData()">Save</button>
-  <p id="status"></p>
+  <div id="result"></div>
+
+  <a href="admin.html">Go to Admin Panel</a>
 
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -33,30 +30,32 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    function saveData() {
-      const name = document.getElementById('name').value.trim();
-      const mobile = document.getElementById('mobile').value.trim();
-      const father = document.getElementById('father').value.trim();
-      const address = document.getElementById('address').value.trim();
-      const blood = document.getElementById('blood').value.trim();
+    function search() {
+      const searchName = document.getElementById('searchName').value.trim().toLowerCase();
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = "";
 
-      if (!name || !mobile) {
-        document.getElementById('status').textContent = "❌ Please enter name and mobile.";
-        return;
-      }
+      db.ref('users').once('value', snapshot => {
+        let found = false;
+        snapshot.forEach(childSnapshot => {
+          const data = childSnapshot.val();
+          if (data.name && data.name.toLowerCase() === searchName) {
+            found = true;
+            resultDiv.innerHTML += `
+              <p>
+                <strong>Name:</strong> ${data.name}<br>
+                <strong>Mobile:</strong> ${data.mobile || '-'}<br>
+                <strong>Father:</strong> ${data.father || '-'}<br>
+                <strong>Address:</strong> ${data.address || '-'}<br>
+                <strong>Relation:</strong> ${data.relation || '-'}
+              </p>
+              <hr>
+            `;
+          }
+        });
 
-      const newUserRef = db.ref('users').push();
-      newUserRef.set({
-        name: name.toLowerCase(),
-        mobile: mobile,
-        fatherName: father,
-        address: address,
-        bloodGroup: blood
-      }, (error) => {
-        if (error) {
-          document.getElementById('status').textContent = "❌ Error: " + error;
-        } else {
-          document.getElementById('status').textContent = "✅ Saved Successfully!";
+        if (!found) {
+          resultDiv.innerHTML = "<p>No record found.</p>";
         }
       });
     }

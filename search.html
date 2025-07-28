@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Search User</title>
+</head>
+<body>
+  <h1>Search by Name</h1>
+  <input type="text" id="searchName" placeholder="Enter Name">
+  <button onclick="searchData()">Search</button>
+  <div id="result"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
+      authDomain: "mobilesearchdata.firebaseapp.com",
+      databaseURL: "https://mobilesearchdata-default-rtdb.firebaseio.com",
+      projectId: "mobilesearchdata",
+      storageBucket: "mobilesearchdata.appspot.com",
+      messagingSenderId: "484011687117",
+      appId: "1:484011687117:web:b06b94447c96d158477d84"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function searchData() {
+      const searchName = document.getElementById('searchName').value.toLowerCase();
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = "Searching...";
+
+      db.ref('users').orderByChild('name').equalTo(searchName).once('value', snapshot => {
+        if (snapshot.exists()) {
+          let html = '<h3>Results:</h3>';
+          snapshot.forEach(child => {
+            const data = child.val();
+            html += `<p><strong>Name:</strong> ${data.name}<br>
+                     <strong>Mobile:</strong> ${data.mobile}<br>
+                     <strong>Father:</strong> ${data.father}<br>
+                     <strong>Address:</strong> ${data.address}<br>
+                     <strong>Blood:</strong> ${data.blood}</p><hr>`;
+          });
+          resultDiv.innerHTML = html;
+        } else {
+          resultDiv.innerHTML = "❌ No data found.";
+        }
+      });
+    }
+  </script>
+</body>
+</html>

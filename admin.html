@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin - Mobile Search</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+</head>
+<body>
+  <h2>Admin Panel</h2>
+  <input type="text" id="name" placeholder="Enter Name" required><br><br>
+  <input type="text" id="mobile" placeholder="Enter Mobile Number" required><br><br>
+  <button onclick="saveData()">Save</button>
+  <p id="status"></p>
+
+  <script>
+    // 🔁 Firebase Config (replace with your real config)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "mobilesearch.firebaseapp.com",
+      databaseURL: "https://mobilesearch-default-rtdb.firebaseio.com",
+      projectId: "mobilesearch",
+      storageBucket: "mobilesearch.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function saveData() {
+      const name = document.getElementById('name').value.trim();
+      const mobile = document.getElementById('mobile').value.trim();
+
+      if (name && mobile) {
+        database.ref('users/' + name.toLowerCase()).set({
+          name: name,
+          mobile: mobile
+        }).then(() => {
+          document.getElementById('status').innerText = '✅ Saved Successfully!';
+        }).catch(error => {
+          document.getElementById('status').innerText = '❌ Error: ' + error;
+        });
+      } else {
+        alert('Please fill both fields');
+      }
+    }
+  </script>
+</body>
+</html>

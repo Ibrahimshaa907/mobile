@@ -4,20 +4,23 @@
   <title>Admin Panel</title>
 </head>
 <body>
-  <h1>Enter Name & Mobile</h1>
+  <h1>Enter User Details</h1>
 
   <input type="text" id="name" placeholder="Name"><br><br>
+  <input type="text" id="father" placeholder="Father Name"><br><br>
   <input type="text" id="mobile" placeholder="Mobile"><br><br>
-  <button onclick="saveData()">Save</button>
+  <input type="text" id="address" placeholder="Address"><br><br>
+  <input type="text" id="relation" placeholder="Blood Relation"><br><br>
 
+  <button onclick="saveData()">Save</button>
   <p id="status"></p>
 
-  <!-- Firebase SDKs -->
+  <a href="search.html">Go to Search Page</a>
+
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
   <script>
-    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
       authDomain: "mobilesearchdata.firebaseapp.com",
@@ -28,32 +31,31 @@
       appId: "1:484011687117:web:b06b94447c96d158477d84"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Save function
     function saveData() {
       const name = document.getElementById('name').value.trim().toLowerCase();
-      const mobile = document.getElementById('mobile').value.trim();
-      const status = document.getElementById('status');
+      const father = document.getElementById('father').value;
+      const mobile = document.getElementById('mobile').value;
+      const address = document.getElementById('address').value;
+      const relation = document.getElementById('relation').value;
 
       if (!name || !mobile) {
-        status.textContent = "❌ Please enter both Name and Mobile.";
+        document.getElementById('status').textContent = "❌ Name and Mobile are required.";
         return;
       }
 
       db.ref('users/' + name).set({
         name: name,
-        mobile: mobile
+        father: father,
+        mobile: mobile,
+        address: address,
+        relation: relation
       }, (error) => {
-        if (error) {
-          status.textContent = "❌ Error: " + error;
-        } else {
-          status.textContent = "✅ Saved Successfully!";
-          document.getElementById('name').value = '';
-          document.getElementById('mobile').value = '';
-        }
+        document.getElementById('status').textContent = error
+          ? "❌ Error: " + error
+          : "✅ Saved Successfully!";
       });
     }
   </script>

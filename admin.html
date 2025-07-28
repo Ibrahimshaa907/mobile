@@ -16,12 +16,10 @@
   <button onclick="saveData()">Save</button>
   <p id="status"></p>
 
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
   <script>
-    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
       authDomain: "mobilesearchdata.firebaseapp.com",
@@ -32,7 +30,6 @@
       appId: "1:484011687117:web:b06b94447c96d158477d84"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
@@ -48,7 +45,7 @@
         return;
       }
 
-      const newUserRef = db.ref('users').push(); // Auto-generate ID
+      const newUserRef = db.ref('users').push();
       newUserRef.set({
         name: name.toLowerCase(),
         mobile: mobile,
@@ -65,4 +62,4 @@
     }
   </script>
 </body>
-  </html>
+</html>

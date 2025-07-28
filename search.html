@@ -1,26 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Search User</title>
+  <title>Search</title>
 </head>
 <body>
   <h1>Search by Name</h1>
-
-  <input type="text" id="searchName" placeholder="Enter name to search"><br><br>
+  <input type="text" id="searchName" placeholder="Enter name">
   <button onclick="searchData()">Search</button>
-
-  <p id="result"></p>
-  <br>
-  <a href="admin.html">Go to Admin Page</a>
+  <div id="result"></div>
 
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
       authDomain: "mobilesearchdata.firebaseapp.com",
-      databaseURL: "https://mobilesearchdata-default-rtdb.asia-southeast1.firebasedatabase.app",
+      databaseURL: "https://mobilesearchdata-default-rtdb.firebaseio.com",
       projectId: "mobilesearchdata",
       storageBucket: "mobilesearchdata.appspot.com",
       messagingSenderId: "484011687117",
@@ -31,32 +26,29 @@
     const db = firebase.database();
 
     function searchData() {
-      const name = document.getElementById('searchName').value.trim().toLowerCase();
-      const result = document.getElementById('result');
+      const searchName = document.getElementById('searchName').value.toLowerCase();
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = "";
 
-      if (!name) {
-        result.textContent = "❌ Please enter a name.";
-        return;
-      }
-
-      db.ref('users/' + name).once('value')
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            result.innerHTML = `
-              <strong>Name:</strong> ${data.name}<br>
-              <strong>Father Name:</strong> ${data.father || "-"}<br>
-              <strong>Mobile:</strong> ${data.mobile}<br>
-              <strong>Address:</strong> ${data.address || "-"}<br>
-              <strong>Blood Relation:</strong> ${data.relation || "-"}<br>
+      db.ref('users').orderByChild('name').equalTo(searchName).once('value', (snapshot) => {
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            const data = child.val();
+            const html = `
+              <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+                <strong>Name:</strong> ${data.name}<br>
+                <strong>Mobile:</strong> ${data.mobile}<br>
+                <strong>Father Name:</strong> ${data.fatherName || "N/A"}<br>
+                <strong>Address:</strong> ${data.address || "N/A"}<br>
+                <strong>Blood Group:</strong> ${data.bloodGroup || "N/A"}
+              </div>
             `;
-          } else {
-            result.textContent = "❌ No record found.";
-          }
-        })
-        .catch((error) => {
-          result.textContent = "❌ Error: " + error;
-        });
+            resultDiv.innerHTML += html;
+          });
+        } else {
+          resultDiv.innerHTML = "<p>❌ No record found.</p>";
+        }
+      });
     }
   </script>
 </body>

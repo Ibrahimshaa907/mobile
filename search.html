@@ -13,12 +13,10 @@
   <br>
   <a href="admin.html">Go to Admin Page</a>
 
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
   <script>
-    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
       authDomain: "mobilesearchdata.firebaseapp.com",
@@ -29,7 +27,6 @@
       appId: "1:484011687117:web:b06b94447c96d158477d84"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
@@ -38,7 +35,7 @@
       const result = document.getElementById('result');
 
       if (!name) {
-        result.textContent = "❌ Please enter a name to search.";
+        result.textContent = "❌ Please enter a name.";
         return;
       }
 
@@ -46,7 +43,13 @@
         .then((snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.val();
-            result.textContent = `📞 Mobile: ${data.mobile}`;
+            result.innerHTML = `
+              <strong>Name:</strong> ${data.name}<br>
+              <strong>Father Name:</strong> ${data.father || "-"}<br>
+              <strong>Mobile:</strong> ${data.mobile}<br>
+              <strong>Address:</strong> ${data.address || "-"}<br>
+              <strong>Blood Relation:</strong> ${data.relation || "-"}<br>
+            `;
           } else {
             result.textContent = "❌ No record found.";
           }

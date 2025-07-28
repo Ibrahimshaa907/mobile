@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,8 +9,13 @@
   <button onclick="searchData()">Search</button>
   <p id="result"></p>
 
+  <hr>
+  <a href="admin.html">Go to Admin Panel</a>
+
+  <!-- Firebase Libraries -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
@@ -28,16 +32,25 @@
 
     function searchData() {
       const name = document.getElementById('searchName').value.toLowerCase();
-      db.ref('users/' + name).once('value', (snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          document.getElementById('result').textContent = "📞 Mobile: " + data.mobile;
-        } else {
-          document.getElementById('result').textContent = "❌ Name not found";
-        }
-      }).catch((error) => {
-        document.getElementById('result').textContent = "Error: " + error;
-      });
+      const result = document.getElementById('result');
+
+      if (!name) {
+        result.textContent = "❗ Please enter a name.";
+        return;
+      }
+
+      db.ref('users/' + name).once('value')
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            result.textContent = "📞 Mobile: " + data.mobile;
+          } else {
+            result.textContent = "❌ No record found.";
+          }
+        })
+        .catch(error => {
+          result.textContent = "Error: " + error;
+        });
     }
   </script>
 </body>

@@ -1,58 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Search User</title>
+  <title>Mobile Search Home</title>
 </head>
 <body>
-  <h1>Search by Name</h1>
-
-  <input type="text" id="searchName" placeholder="Enter name to search"><br><br>
-  <button onclick="searchData()">Search</button>
-
-  <p id="result"></p>
-  <br>
-  <a href="admin.html">Go to Admin Page</a>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-
-  <script>
-    // Firebase config (same as admin page)
-    const firebaseConfig = {
-      apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
-      authDomain: "mobilesearchdata.firebaseapp.com",
-      databaseURL: "https://mobilesearchdata-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "mobilesearchdata",
-      storageBucket: "mobilesearchdata.appspot.com",
-      messagingSenderId: "484011687117",
-      appId: "1:484011687117:web:b06b94447c96d158477d84"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    function searchData() {
-      const name = document.getElementById('searchName').value.trim().toLowerCase();
-      const result = document.getElementById('result');
-
-      if (!name) {
-        result.textContent = "❌ Please enter a name to search.";
-        return;
-      }
-
-      db.ref('users/' + name).once('value', (snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          result.textContent = `📞 Mobile: ${data.mobile}`;
-        } else {
-          result.textContent = "❌ No record found.";
-        }
-      }, (error) => {
-        result.textContent = "❌ Error: " + error;
-      });
-    }
-  </script>
+  <h1>Welcome to Mobile Search</h1>
+  <a href="admin.html">Go to Admin Panel</a><br>
+  <a href="search.html">Go to Search Page</a>
 </body>
 </html>

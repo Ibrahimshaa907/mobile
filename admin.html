@@ -1,18 +1,18 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin - MobileSearch</title>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <title>Admin Panel</title>
 </head>
 <body>
-  <h2>Admin Panel</h2>
-  <input type="text" id="name" placeholder="Enter Name" required><br><br>
-  <input type="text" id="mobile" placeholder="Enter Mobile Number" required><br><br>
+  <h1>Enter Name & Mobile</h1>
+  <input type="text" id="name" placeholder="Name"><br>
+  <input type="text" id="mobile" placeholder="Mobile"><br>
   <button onclick="saveData()">Save</button>
   <p id="status"></p>
-  <a href="index.html">Go to Search Page</a>
 
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
@@ -25,24 +25,25 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+    const db = firebase.database();
 
     function saveData() {
-      const name = document.getElementById('name').value.trim();
-      const mobile = document.getElementById('mobile').value.trim();
-
-      if (name && mobile) {
-        database.ref('users/' + name.toLowerCase()).set({
-          name: name,
-          mobile: mobile
-        }).then(() => {
-          document.getElementById('status').innerText = '✅ Saved Successfully!';
-        }).catch(error => {
-          document.getElementById('status').innerText = '❌ Error: ' + error;
-        });
-      } else {
-        alert('Please fill both fields');
+      const name = document.getElementById('name').value.toLowerCase();
+      const mobile = document.getElementById('mobile').value;
+      if (!name || !mobile) {
+        document.getElementById('status').textContent = "❌ Please enter both fields.";
+        return;
       }
+      db.ref('users/' + name).set({
+        name: name,
+        mobile: mobile
+      }, (error) => {
+        if (error) {
+          document.getElementById('status').textContent = "❌ Error: " + error;
+        } else {
+          document.getElementById('status').textContent = "✅ Saved Successfully!";
+        }
+      });
     }
   </script>
 </body>

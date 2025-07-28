@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Search - Mobile Search</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+</head>
+<body>
+  <h2>Search Mobile by Name</h2>
+  <input type="text" id="searchName" placeholder="Enter Name">
+  <button onclick="search()">Search</button>
+  <p id="result"></p>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "mobilesearch.firebaseapp.com",
+      databaseURL: "https://mobilesearch-default-rtdb.firebaseio.com",
+      projectId: "mobilesearch",
+      storageBucket: "mobilesearch.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function search() {
+      const name = document.getElementById('searchName').value.trim().toLowerCase();
+
+      if (!name) return alert('Enter a name to search.');
+
+      database.ref('users/' + name).get().then(snapshot => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          document.getElementById('result').innerText = '📞 Mobile: ' + data.mobile;
+        } else {
+          document.getElementById('result').innerText = '❌ Name not found.';
+        }
+      }).catch(error => {
+        document.getElementById('result').innerText = 'Error: ' + error;
+      });
+    }
+  </script>
+</body>
+</html>

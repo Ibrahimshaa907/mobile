@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,8 +10,10 @@
   <button onclick="saveData()">Save</button>
   <p id="status"></p>
 
+  <!-- Firebase Libraries -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
@@ -30,18 +31,72 @@
     function saveData() {
       const name = document.getElementById('name').value.toLowerCase();
       const mobile = document.getElementById('mobile').value;
+      const status = document.getElementById('status');
+
       if (!name || !mobile) {
-        document.getElementById('status').textContent = "❌ Please enter both fields.";
+        status.textContent = "❌ Please enter both fields.";
         return;
       }
-      db.ref('users/' + name).set({
-        name: name,
-        mobile: mobile
-      }, (error) => {
+
+      db.ref('users/' + name).set({ name, mobile }, (error) => {
         if (error) {
-          document.getElementById('status').textContent = "❌ Error: " + error;
+          status.textContent = "❌ Error: " + error;
         } else {
-          document.getElementById('status').textContent = "✅ Saved Successfully!";
+          status.textContent = "✅ Saved Successfully!";
+          document.getElementById('name').value = "";
+          document.getElementById('mobile').value = "";
+        }
+      });
+    }
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+</head>
+<body>
+  <h1>Enter Name & Mobile</h1>
+  <input type="text" id="name" placeholder="Name"><br>
+  <input type="text" id="mobile" placeholder="Mobile"><br>
+  <button onclick="saveData()">Save</button>
+  <p id="status"></p>
+
+  <!-- Firebase Libraries -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
+      authDomain: "mobilesearchdata.firebaseapp.com",
+      databaseURL: "https://mobilesearchdata-default-rtdb.firebaseio.com",
+      projectId: "mobilesearchdata",
+      storageBucket: "mobilesearchdata.appspot.com",
+      messagingSenderId: "484011687117",
+      appId: "1:484011687117:web:b06b94447c96d158477d84"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function saveData() {
+      const name = document.getElementById('name').value.toLowerCase();
+      const mobile = document.getElementById('mobile').value;
+      const status = document.getElementById('status');
+
+      if (!name || !mobile) {
+        status.textContent = "❌ Please enter both fields.";
+        return;
+      }
+
+      db.ref('users/' + name).set({ name, mobile }, (error) => {
+        if (error) {
+          status.textContent = "❌ Error: " + error;
+        } else {
+          status.textContent = "✅ Saved Successfully!";
+          document.getElementById('name').value = "";
+          document.getElementById('mobile').value = "";
         }
       });
     }

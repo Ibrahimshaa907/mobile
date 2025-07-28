@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Search</title>
+  <title>Search Person</title>
 </head>
 <body>
-  <h1>Search by Name</h1>
-  <input type="text" id="searchName" placeholder="Enter name">
-  <button onclick="searchData()">Search</button>
-  <div id="result"></div>
+  <h2>Search by Name</h2>
 
+  <input type="text" id="searchName" placeholder="Enter name">
+  <button onclick="search()">Search</button>
+
+  <div id="result"></div>
+  <a href="admin.html">Go to Admin Panel</a>
+
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
@@ -25,28 +30,30 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    function searchData() {
-      const searchName = document.getElementById('searchName').value.toLowerCase();
+    function search() {
+      const searchName = document.getElementById('searchName').value.trim().toLowerCase();
       const resultDiv = document.getElementById('result');
       resultDiv.innerHTML = "";
 
-      db.ref('users').orderByChild('name').equalTo(searchName).once('value', (snapshot) => {
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            const data = child.val();
-            const html = `
-              <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+      db.ref('users').once('value', snapshot => {
+        let found = false;
+        snapshot.forEach(child => {
+          const data = child.val();
+          if (data.name && data.name.toLowerCase() === searchName) {
+            found = true;
+            resultDiv.innerHTML += `
+              <p>
                 <strong>Name:</strong> ${data.name}<br>
-                <strong>Mobile:</strong> ${data.mobile}<br>
-                <strong>Father Name:</strong> ${data.fatherName || "N/A"}<br>
-                <strong>Address:</strong> ${data.address || "N/A"}<br>
-                <strong>Blood Group:</strong> ${data.bloodGroup || "N/A"}
-              </div>
-            `;
-            resultDiv.innerHTML += html;
-          });
-        } else {
-          resultDiv.innerHTML = "<p>❌ No record found.</p>";
+                <strong>Mobile:</strong> ${data.mobile || "-"}<br>
+                <strong>Father:</strong> ${data.father || "-"}<br>
+                <strong>Address:</strong> ${data.address || "-"}<br>
+                <strong>Relation:</strong> ${data.relation || "-"}
+              </p><hr>`;
+          }
+        });
+
+        if (!found) {
+          resultDiv.innerHTML = "<p>No matching record found.</p>";
         }
       });
     }

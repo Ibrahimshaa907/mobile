@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin - Mobile Search</title>
+  <title>Admin - MobileSearch</title>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 </head>
@@ -11,17 +11,17 @@
   <input type="text" id="mobile" placeholder="Enter Mobile Number" required><br><br>
   <button onclick="saveData()">Save</button>
   <p id="status"></p>
+  <a href="index.html">Go to Search Page</a>
 
   <script>
-    // 🔁 Firebase Config (replace with your real config)
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "mobilesearch.firebaseapp.com",
-      databaseURL: "https://mobilesearch-default-rtdb.firebaseio.com",
-      projectId: "mobilesearch",
-      storageBucket: "mobilesearch.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
+      authDomain: "mobilesearchdata.firebaseapp.com",
+      databaseURL: "https://mobilesearchdata-default-rtdb.firebaseio.com",
+      projectId: "mobilesearchdata",
+      storageBucket: "mobilesearchdata.appspot.com",
+      messagingSenderId: "484011687117",
+      appId: "1:484011687117:web:b06b94447c96d158477d84"
     };
 
     firebase.initializeApp(firebaseConfig);

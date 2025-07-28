@@ -1,71 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Search Mobile</title>
+  <title>Search User</title>
 </head>
 <body>
   <h1>Search by Name</h1>
-  <input type="text" id="searchName" placeholder="Enter name">
+
+  <input type="text" id="searchName" placeholder="Enter name to search"><br><br>
   <button onclick="searchData()">Search</button>
+
   <p id="result"></p>
+  <br>
+  <a href="admin.html">Go to Admin Page</a>
 
-  <hr>
-  <a href="admin.html">Go to Admin Panel</a>
-
-  <!-- Firebase Libraries -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
   <script>
+    // Firebase config (same as admin page)
     const firebaseConfig = {
       apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
       authDomain: "mobilesearchdata.firebaseapp.com",
-      databaseURL: "https://mobilesearchdata-default-rtdb.firebaseio.com",
+      databaseURL: "https://mobilesearchdata-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "mobilesearchdata",
       storageBucket: "mobilesearchdata.appspot.com",
       messagingSenderId: "484011687117",
       appId: "1:484011687117:web:b06b94447c96d158477d84"
     };
 
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // --- Yahan aapka test code aayega ---
-    // Yeh test karne ke liye ke data likha ja raha hai ya nahi
-    db.ref('test_write/from_index_html').set({
-      message: "Hello from my index.html!",
-      timestamp: Date.now(),
-      status: "success"
-    })
-    .then(() => {
-      console.log("TEST WRITE: Data written successfully! Check your Firebase Realtime Database.");
-    })
-    .catch((error) => {
-      console.error("TEST WRITE ERROR: Error writing data: ", error);
-    });
-    // --- Test code khatam ---
-
     function searchData() {
-      const name = document.getElementById('searchName').value.toLowerCase();
+      const name = document.getElementById('searchName').value.trim().toLowerCase();
       const result = document.getElementById('result');
 
       if (!name) {
-        result.textContent = "❗ Please enter a name.";
+        result.textContent = "❌ Please enter a name to search.";
         return;
       }
 
-      db.ref('users/' + name).once('value')
-        .then(snapshot => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            result.textContent = "📞 Mobile: " + data.mobile;
-          } else {
-            result.textContent = "❌ No record found.";
-          }
-        })
-        .catch(error => {
-          result.textContent = "Error: " + error;
-        });
+      db.ref('users/' + name).once('value', (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          result.textContent = `📞 Mobile: ${data.mobile}`;
+        } else {
+          result.textContent = "❌ No record found.";
+        }
+      }, (error) => {
+        result.textContent = "❌ Error: " + error;
+      });
     }
   </script>
 </body>

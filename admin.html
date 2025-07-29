@@ -1,25 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Simple Firebase Form</title>
+  <title>Admin Form</title>
 </head>
 <body>
-  <h2>Enter Data</h2>
-  <input type="text" id="name" placeholder="Name"><br><br>
-  <input type="text" id="mobile" placeholder="Mobile Number"><br><br>
-  <button onclick="submitData()">Submit</button>
-  <p id="status"></p>
+  <h2>Bus Entry Form</h2>
+  <form id="busForm">
+    <label>Name:</label>
+    <input type="text" id="name" required><br><br>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <label>Mobile:</label>
+    <input type="text" id="mobile" required><br><br>
 
-  <script>
-    // Firebase Config
+    <button type="submit">Save to Firebase</button>
+  </form>
+
+  <p id="message"></p>
+
+  <!-- Firebase Scripts -->
+  <script type="module">
+    // Import Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    // Firebase config (Your credentials)
     const firebaseConfig = {
       apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
       authDomain: "mobilesearchdata.firebaseapp.com",
-      databaseURL: "https://mobilesearchdata-default-rtdb.firebaseio.com",
+      databaseURL: "https://mobilesearchdata-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "mobilesearchdata",
       storageBucket: "mobilesearchdata.appspot.com",
       messagingSenderId: "484011687117",
@@ -27,33 +35,29 @@
     };
 
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    // Function to save data
-    function submitData() {
-      const name = document.getElementById("name").value.trim().toLowerCase();
-      const mobile = document.getElementById("mobile").value.trim();
+    // Form submission
+    document.getElementById("busForm").addEventListener("submit", function (e) {
+      e.preventDefault();
 
-      if (!name || !mobile) {
-        document.getElementById("status").textContent = "❌ Please fill all fields.";
-        return;
-      }
+      const name = document.getElementById("name").value;
+      const mobile = document.getElementById("mobile").value;
 
-      const newDataRef = db.ref("users").push();
-      newDataRef.set({
+      const newRef = push(ref(db, "buses"));
+      set(newRef, {
         name: name,
         mobile: mobile
-      }, function(error) {
-        if (error) {
-          document.getElementById("status").textContent = "❌ Error: " + error;
-        } else {
-          document.getElementById("status").textContent = "✅ Data saved successfully!";
-          document.getElementById("name").value = "";
-          document.getElementById("mobile").value = "";
-        }
+      })
+      .then(() => {
+        document.getElementById("message").innerText = "Data saved successfully!";
+        document.getElementById("busForm").reset();
+      })
+      .catch((error) => {
+        document.getElementById("message").innerText = "Error: " + error.message;
       });
-    }
+    });
   </script>
 </body>
 </html>

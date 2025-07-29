@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin Panel</title>
+  <title>Simple Firebase Form</title>
 </head>
 <body>
-  <h1>Enter User Details</h1>
-  <input type="text" id="name" placeholder="Name"><br>
-  <input type="text" id="mobile" placeholder="Mobile"><br>
-  <input type="text" id="father" placeholder="Father Name"><br>
-  <input type="text" id="address" placeholder="Address"><br>
-  <input type="text" id="blood" placeholder="Blood Relation"><br>
-  <button onclick="saveData()">Save</button>
+  <h2>Enter Data</h2>
+  <input type="text" id="name" placeholder="Name"><br><br>
+  <input type="text" id="mobile" placeholder="Mobile Number"><br><br>
+  <button onclick="submitData()">Submit</button>
   <p id="status"></p>
 
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
   <script>
+    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
       authDomain: "mobilesearchdata.firebaseapp.com",
@@ -26,33 +26,31 @@
       appId: "1:484011687117:web:b06b94447c96d158477d84"
     };
 
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    function saveData() {
-      const name = document.getElementById('name').value.toLowerCase();
-      const mobile = document.getElementById('mobile').value;
-      const father = document.getElementById('father').value;
-      const address = document.getElementById('address').value;
-      const blood = document.getElementById('blood').value;
+    // Function to save data
+    function submitData() {
+      const name = document.getElementById("name").value.trim().toLowerCase();
+      const mobile = document.getElementById("mobile").value.trim();
 
       if (!name || !mobile) {
-        document.getElementById('status').textContent = "❌ Please enter name and mobile.";
+        document.getElementById("status").textContent = "❌ Please fill all fields.";
         return;
       }
 
-      const newRef = db.ref('users').push();
-      newRef.set({
-        name,
-        mobile,
-        father,
-        address,
-        blood
-      }, (error) => {
+      const newDataRef = db.ref("users").push();
+      newDataRef.set({
+        name: name,
+        mobile: mobile
+      }, function(error) {
         if (error) {
-          document.getElementById('status').textContent = "❌ Error: " + error;
+          document.getElementById("status").textContent = "❌ Error: " + error;
         } else {
-          document.getElementById('status').textContent = "✅ Saved Successfully!";
+          document.getElementById("status").textContent = "✅ Data saved successfully!";
+          document.getElementById("name").value = "";
+          document.getElementById("mobile").value = "";
         }
       });
     }

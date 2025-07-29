@@ -1,49 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Search User</title>
+  <title>Search Record</title>
 </head>
 <body>
-  <h1>Search by Name</h1>
-  <input type="text" id="searchName" placeholder="Enter Name">
+  <h1>Search Person by Name</h1>
+  <input type="text" id="searchName" placeholder="Enter Name" />
   <button onclick="searchData()">Search</button>
   <div id="result"></div>
 
+  <!-- Firebase Libraries -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
   <script>
+    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyAuqCGwh2QTB7nZpURvFsmTXjZJW_7kgpo",
       authDomain: "mobilesearchdata.firebaseapp.com",
-      databaseURL: "https://mobilesearchdata-default-rtdb.firebaseio.com",
+      databaseURL: "https://mobilesearchdata-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "mobilesearchdata",
       storageBucket: "mobilesearchdata.appspot.com",
       messagingSenderId: "484011687117",
       appId: "1:484011687117:web:b06b94447c96d158477d84"
     };
 
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     function searchData() {
-      const searchName = document.getElementById('searchName').value.toLowerCase();
+      const name = document.getElementById('searchName').value.toLowerCase();
       const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = "Searching...";
 
-      db.ref('users').orderByChild('name').equalTo(searchName).once('value', snapshot => {
-        if (snapshot.exists()) {
-          let html = '<h3>Results:</h3>';
-          snapshot.forEach(child => {
-            const data = child.val();
-            html += `<p><strong>Name:</strong> ${data.name}<br>
-                     <strong>Mobile:</strong> ${data.mobile}<br>
-                     <strong>Father:</strong> ${data.father}<br>
-                     <strong>Address:</strong> ${data.address}<br>
-                     <strong>Blood:</strong> ${data.blood}</p><hr>`;
-          });
-          resultDiv.innerHTML = html;
+      db.ref('users/' + name).once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          let output = `<p><strong>Name:</strong> ${data.name}<br>
+                        <strong>Mobile:</strong> ${data.mobile}</p>`;
+          if (data.fatherName) output += `<p><strong>Father Name:</strong> ${data.fatherName}</p>`;
+          if (data.address) output += `<p><strong>Address:</strong> ${data.address}</p>`;
+          if (data.relation) output += `<p><strong>Relation:</strong> ${data.relation}</p>`;
+          resultDiv.innerHTML = output;
         } else {
-          resultDiv.innerHTML = "❌ No data found.";
+          resultDiv.innerHTML = "<p>❌ No record found.</p>";
         }
       });
     }
